@@ -21,6 +21,7 @@ import com.example.entity.Team;
 import com.example.entity.TeamMember;
 import com.example.entity.Users;
 import com.example.service.TeamService;
+import com.example.service.user_services;
 
 @RestController
 @RequestMapping("/team")
@@ -28,17 +29,58 @@ public class TeamController {
     @Autowired
     private TeamService teamService;
     
-    @PostMapping("/create")
-    public ResponseEntity<Object> createTeam(@RequestBody Team team) {
-        Team createdTeam = teamService.createTeam(team);
-        if (createdTeam != null) {
-            TeamDTO teamDTO = teamService.convertToDTO(createdTeam);
-            return new ResponseEntity<>(teamDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Failed to create team", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    @Autowired
+    private user_services userService;
     
+//    @PostMapping("/create")
+//    public ResponseEntity<Object> createTeam(@RequestBody Team team) {
+//        Team createdTeam = teamService.createTeam(team);
+//        if (createdTeam != null) {
+//            TeamDTO teamDTO = teamService.convertToDTO(createdTeam);
+//            return new ResponseEntity<>(teamDTO, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>("Failed to create team", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//    @PostMapping("/create")
+//    public ResponseEntity<Object> createTeam(@RequestBody TeamDTO teamDTO) {
+//        // Convert TeamDTO to Team entity
+//        Team team = teamService.convertToEntity(teamDTO);
+//        
+//        // Create the team
+//        Team createdTeam = teamService.createTeam(team);
+//        
+//        if (createdTeam != null) {
+//            // Convert created team back to DTO for response
+//            TeamDTO createdTeamDTO = teamService.convertToDTO(createdTeam);
+//            return new ResponseEntity<>(createdTeamDTO, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>("Failed to create team", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+    @PostMapping("/create")
+    public ResponseEntity<Object> createTeam(@RequestBody TeamDTO teamDTO, @RequestParam int id) {
+        // Retrieve the user by ID
+        Users user = userService.getUserById(id);
+        
+        if (user != null) {
+            // Convert TeamDTO to Team entity
+            Team team = teamService.convertToEntity(teamDTO);
+            
+            // Create the team
+            Team createdTeam = teamService.createTeam(team, user);
+            
+            if (createdTeam != null) {
+                // Convert created team back to DTO for response
+                TeamDTO createdTeamDTO = teamService.convertToDTO(createdTeam);
+                return new ResponseEntity<>(createdTeamDTO, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Failed to create team", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    }    
     
     @GetMapping("/{teamId}")
     public ResponseEntity<?> getTeamDetails(@PathVariable int teamId) {

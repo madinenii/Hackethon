@@ -10,6 +10,7 @@ public class IdeaDTO {
     private String ideaDomain;
     private String submissionUrl;
     private RanksEnum ranking;
+    private String teamName;
 	public int getIdeaId() {
 		return ideaId;
 	}
@@ -51,6 +52,12 @@ public class IdeaDTO {
 	}
 	public void setRanking(RanksEnum ranking) {
 		this.ranking = ranking;
+	}
+	public String getTeamName() {
+		return teamName;
+	}
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
 	}
 	
     

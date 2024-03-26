@@ -79,6 +79,10 @@ public class Team {
 	public void setTeamMembers(List<TeamMember> teamMembers) {
 		this.teamMembers = teamMembers;
 	}
+	public void addTeamMember(TeamMember teamMember) {
+        teamMembers.add(teamMember);
+        teamMember.setTeam(this);
+    }
 
     
 }
